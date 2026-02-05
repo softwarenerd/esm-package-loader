@@ -22,6 +22,7 @@ export interface ESMPackageDescriptor {
     readonly packageName: string;
     readonly version: string;
     readonly fileName?: string;
+    readonly dev?: boolean;
 }
 
 /**
@@ -88,13 +89,16 @@ export class ESMPackageLoader {
      * Loads a package descriptor.
      * @param packageDescriptor The package descriptor.
      */
-    private async loadPackageDescriptor({ packageName, version, fileName }: ESMPackageDescriptor) {
+    private async loadPackageDescriptor({ packageName, version, fileName, dev }: ESMPackageDescriptor) {
         // Construct the URL string.
         let urlString = packageName + `@${version}`;
         if (fileName) {
             urlString += `/${fileName}`;
         }
         urlString += `?target=${this._target}`;
+        if (dev) {
+            urlString += '&dev';
+        }
 
         // Construct the URL for the package and the save as path.
         const url = new URL(urlString, BASE_URL);
